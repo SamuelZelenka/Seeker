@@ -15,15 +15,16 @@ MonoBehaviour:
   _airResistance: 3
   _groundFriction: 3.24
   _airAcceleration: 3
-  _groundAcceleration: 3
+  _groundAcceleration: 8
   _jumpImpulse: 4
   _maxSpeed: 100
   _forwardSpeed: 1
   _backwardSpeed: 1
   _sideSpeed: 1
   _climbSpeed: 0.4
-  _standHeight: 1.418
-  _crouchHeight: 0.664
-  _runSpeedMultiplier: 1.8
+  radius: 0.2
+  _standHeight: 1.8
+  _crouchHeight: 0.782
+  _runSpeedMultiplier: 1.4
   _crouchSpeedMultiplier: 0.3
   _walkSpeedMultiplier: 0.8
