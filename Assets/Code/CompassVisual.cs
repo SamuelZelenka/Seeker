@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 public class CompassVisual : MonoBehaviour
 {
     [SerializeField]
-    private PlayerMovement playerMovement;
+    private PlayerController playerMovement;
 
     [SerializeField]
     private Transform compassNeedle;

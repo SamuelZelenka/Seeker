@@ -15,6 +15,7 @@ public class CharacterConfig : ScriptableObject
 
 	public float GroundFriction => _groundFriction;
 
+	[Header("Acceleration")]
 	[SerializeField]
 	private float _airAcceleration;
 
@@ -60,6 +61,12 @@ public class CharacterConfig : ScriptableObject
 
 	public float ClimbSpeed => _climbSpeed;
 
+	[Header("Scaling")]
+	[SerializeField]
+	[Range(0.1f, 2)]
+	private float radius;
+	public float Radius => radius;
+
 	[SerializeField]
 	[Range(0.1f, 2f)]
 	private float _standHeight;
@@ -72,6 +79,7 @@ public class CharacterConfig : ScriptableObject
 
 	public float CrouchHeight => _crouchHeight;
 
+	[Header("Speed")]
 	[SerializeField]
 	private float _runSpeedMultiplier = 2f;
 
