@@ -12,19 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01098f3888b5ae745bea44c1df1b2464, type: 3}
   m_Name: PlayerConfig
   m_EditorClassIdentifier: 
-  _airResistance: 3
-  _groundFriction: 3.24
+  _airResistance: 8
+  _groundFriction: 10
   _airAcceleration: 3
   _groundAcceleration: 8
   _jumpImpulse: 4
   _maxSpeed: 100
-  _forwardSpeed: 1
-  _backwardSpeed: 1
-  _sideSpeed: 1
-  _climbSpeed: 0.4
-  radius: 0.2
+  _forwardRate: 1
+  _backwardRate: 0.752
+  _sideRate: 0.745
+  _climbSpeed: 1
+  radius: 0.4
   _standHeight: 1.8
   _crouchHeight: 0.782
-  _runSpeedMultiplier: 1.4
+  _runSpeedMultiplier: 5
   _crouchSpeedMultiplier: 0.3
-  _walkSpeedMultiplier: 0.8
+  _walkSpeedMultiplier: 3
+  _climbSpeedMultiplier: 1
