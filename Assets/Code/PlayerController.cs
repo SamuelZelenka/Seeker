@@ -1,11 +1,11 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public partial class PlayerController : MonoBehaviour
 {
-	public Action<Collider> OnEnter { get; private set; }
-	public Action<Collider> OnExit { get; private set; }
+	public delegate void TriggerCollisionHandler(Collider collider);
+
+	public TriggerCollisionHandler TriggerEnter;
+	public TriggerCollisionHandler TriggerExit;
 
 	public Vector3 velocity;
 
@@ -22,7 +22,6 @@ public partial class PlayerController : MonoBehaviour
 	[SerializeField]
 	private CameraController _cameraController;
 
-
 	public ControllerState controllerState;
 
 	private void Start()
@@ -32,6 +31,8 @@ public partial class PlayerController : MonoBehaviour
 		_moveInfo = new CharacterMovementInfo(_characterController);
 
 		controllerState = new DefaultState(_moveInfo, this, _cameraController, _characterConfig, _characterController);
+
+		SetupTriggerActions();
 	}
 
 	private void Update()
@@ -44,15 +45,44 @@ public partial class PlayerController : MonoBehaviour
 		controllerState.LateUpdate();
 	}
 
+	private void SetupTriggerActions()
+	{
+		SetupClimbable();
+	}
+
+	private void SetupClimbable()
+	{
+		TriggerEnter += (c) =>
+		{
+			if (c.CompareTag("Climbable"))
+			{
+				SetClimbing(c.gameObject);
+			}
+		};
+
+		TriggerExit += (c) =>
+		{
+			if (c.CompareTag("Climbable"))
+			{
+				SetClimbing(null);
+			}
+		};
+	}
+
 	private void UpdateGravity()
 	{
-		var enableGravity = !_characterController.isGrounded && _currentClimbable == null;
-		if (_characterController.velocity.y > 0 && enableGravity)
+		var enableGravity = !_characterController.isGrounded && !_moveInfo.IsClimbing;
+		if (enableGravity)
 		{
-			if (_characterController.collisionFlags == CollisionFlags.Above)
-				velocity.y = -1f;
+			if (_characterController.velocity.y > 0)
+			{
+				if (_characterController.collisionFlags == CollisionFlags.Above)
+				{
+					velocity.y = -1f;
+				}
+			}
+			velocity += Physics.gravity * Time.deltaTime;
 		}
-		velocity += Physics.gravity * Time.deltaTime;
 	}
 
 	private void Friction()
@@ -71,23 +101,9 @@ public partial class PlayerController : MonoBehaviour
 		}
 	}
 
-	private void OnTriggerEnter(Collider other)
-	{
-		OnEnter(other);
-		if (other.CompareTag("Climbable"))
-		{
-			SetClimbing(other.gameObject);
-		}
-	}
+	private void OnTriggerEnter(Collider other) => TriggerEnter?.Invoke(other);
 
-	private void OnTriggerExit(Collider other)
-	{
-		OnExit(other);
-		if (other.CompareTag("Climbable"))
-		{
-			SetClimbing(null);
-		}
-	}
+	private void OnTriggerExit(Collider other) => TriggerExit?.Invoke(other);
 
 	private void SetClimbing(GameObject climbable)
 	{

@@ -30,7 +30,10 @@ public class MovementAction : PlayerAction
 			inputDirection += _playerController.transform.forward * verticalInput;
 
 		var moveSpeedMultiplier = _playerController.controllerState.GetSpeedMultiplier(_moveInfo, _characterConfig);
-		float bobbingSpeed = inputDirection.magnitude > 0.01f ? moveSpeedMultiplier : 0;
+
+		//Move Bobbing Speed to own action
+		float bobbingSpeed = inputDirection.magnitude > 0.01f ? 1 : 0;
+		bobbingSpeed = _moveInfo.IsRunning ? 1.4f : bobbingSpeed;
 
 		_cameraController.SetBobbingSpeed(bobbingSpeed);
 

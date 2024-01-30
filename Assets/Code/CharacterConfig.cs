@@ -38,25 +38,25 @@ public class CharacterConfig : ScriptableObject
 	public float MaxSpeed => _maxSpeed;
 
 	[SerializeField]
-	[Range(0.1f, 10f)]
-	private float _forwardSpeed;
+	[Range(0.1f, 1f)]
+	private float _forwardRate;
 
-	public float ForwardSpeed => _forwardSpeed;
-
-	[SerializeField]
-	[Range(0.1f, 10f)]
-	private float _backwardSpeed;
-
-	public float BackwardSpeed => _backwardSpeed;
+	public float ForwardRate => _forwardRate;
 
 	[SerializeField]
-	[Range(0.1f, 10f)]
-	private float _sideSpeed;
+	[Range(0.1f, 1f)]
+	private float _backwardRate;
 
-	public float SideSpeed => _sideSpeed;
+	public float BackwardRate => _backwardRate;
 
 	[SerializeField]
-	[Range(0.1f, 10f)]
+	[Range(0.1f, 1f)]
+	private float _sideRate;
+
+	public float SideRate => _sideRate;
+
+	[SerializeField]
+	[Range(0.1f, 1f)]
 	private float _climbSpeed;
 
 	public float ClimbSpeed => _climbSpeed;
@@ -94,4 +94,9 @@ public class CharacterConfig : ScriptableObject
 	private float _walkSpeedMultiplier = 1f;
 
 	public float WalkSpeedMultiplier => _walkSpeedMultiplier;
+
+	[SerializeField]
+	private float _climbSpeedMultiplier = 1f;
+
+	public float ClimbSpeedMultiplier => _climbSpeedMultiplier;
 }
