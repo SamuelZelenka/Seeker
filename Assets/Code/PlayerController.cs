@@ -11,9 +11,11 @@ public partial class PlayerController : MonoBehaviour
 
 	private GameObject _currentClimbable;
 	private CharacterController _characterController;
-	private CharacterMovementInfo _moveInfo;
 
 	public GameObject CurrentClimbable => _currentClimbable;
+
+	[SerializeField]
+	private PlayerInput _moveInfo;
 
 	[SerializeField]
 	private CharacterConfig _characterConfig;
@@ -28,7 +30,7 @@ public partial class PlayerController : MonoBehaviour
 	{
 		_characterController = GetComponent<CharacterController>();
 		_characterController.radius = _characterConfig.Radius;
-		_moveInfo = new CharacterMovementInfo(_characterController);
+		_moveInfo = new PlayerInput();
 
 		controllerState = new DefaultState(_moveInfo, this, _cameraController, _characterConfig, _characterController);
 
@@ -37,6 +39,7 @@ public partial class PlayerController : MonoBehaviour
 
 	private void Update()
 	{
+		UpdateInputs();
 		controllerState.EarlyUpdate();
 		UpdateGravity();
 		controllerState.Update();
@@ -69,6 +72,16 @@ public partial class PlayerController : MonoBehaviour
 		};
 	}
 
+
+	private void UpdateInputs()
+	{
+		_moveInfo.HorizontalInput = Input.GetAxis("Horizontal");
+		_moveInfo.VerticalInput = Input.GetAxis("Vertical");
+		_moveInfo.JumpInput = Input.GetAxis("Jump");
+		_moveInfo.CrouchingInput = Input.GetAxis("Crouch");
+		_moveInfo.IsRunning = Input.GetKey(KeyCode.LeftShift);
+	}
+
 	private void UpdateGravity()
 	{
 		var enableGravity = !_characterController.isGrounded && !_moveInfo.IsClimbing;
@@ -83,6 +96,7 @@ public partial class PlayerController : MonoBehaviour
 			}
 			velocity += Physics.gravity * Time.deltaTime;
 		}
+		_moveInfo.IsGrounded = _characterController.isGrounded;
 	}
 
 	private void Friction()
@@ -101,13 +115,26 @@ public partial class PlayerController : MonoBehaviour
 		}
 	}
 
-	private void OnTriggerEnter(Collider other) => TriggerEnter?.Invoke(other);
+	private void OnTriggerEnter(Collider other)
+	{
+
+		TriggerEnter?.Invoke(other);
+	}
 
 	private void OnTriggerExit(Collider other) => TriggerExit?.Invoke(other);
 
 	private void SetClimbing(GameObject climbable)
 	{
 		_currentClimbable = climbable;
-		_moveInfo.IsClimbing = climbable != null;
+		if (climbable != null)
+		{
+			velocity = Vector3.zero;
+			controllerState = new ClimbState(controllerState);
+		}
+		else
+		{
+			controllerState = new DefaultState(controllerState);
+		}
+		
 	}
 }
