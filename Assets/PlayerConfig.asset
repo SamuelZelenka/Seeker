@@ -28,4 +28,4 @@ MonoBehaviour:
   _runSpeedMultiplier: 5
   _crouchSpeedMultiplier: 0.3
   _walkSpeedMultiplier: 3
-  _climbSpeedMultiplier: 1
+  _climbSpeedMultiplier: 5
