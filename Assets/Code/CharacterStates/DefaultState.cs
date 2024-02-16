@@ -2,7 +2,7 @@
 
 public class DefaultState : ControllerState
 {
-	public DefaultState(ControllerState state) :base(state)
+	public DefaultState(ControllerState state) : base(state)
 	{
 		Setup();
 	}
@@ -25,8 +25,11 @@ public class DefaultState : ControllerState
 	private void Setup()
 	{
 		_earlyActions.Add(Move);
+		_earlyActions.Add(UpdateGravity);
 		_actions.Add(Jump);
 		_actions.Add(Crouch);
+		_lateActions.Add(Friction);
+		_lateActions.Add(MoveCharacter);
 	}
 
 	public override void Move()
@@ -36,9 +39,7 @@ public class DefaultState : ControllerState
 
 		Transform playerTrans = _playerController.transform;
 		Vector3 inputDir = playerTrans.right * hInput;
-
-		if (_moveInfo.IsGrounded)
-			inputDir += playerTrans.forward * vInput;
+		inputDir += playerTrans.forward * vInput;
 
 		//TODO: Move Bobbing Speed somewhere else
 		CameraBobbing(inputDir);
@@ -88,5 +89,37 @@ public class DefaultState : ControllerState
 		moveSpeedMultiplier = moveInfo.CrouchingInput > 0 ? CharConfig.CrouchSpeedMultiplier : moveSpeedMultiplier;
 		moveSpeedMultiplier = moveInfo.IsClimbing ? CharConfig.ClimbSpeedMultiplier : moveSpeedMultiplier;
 		return moveSpeedMultiplier;
+	}
+
+	private void UpdateGravity()
+	{
+		var enableGravity = !_characterController.isGrounded && !_moveInfo.IsClimbing;
+		if (enableGravity)
+		{
+			if (_characterController.velocity.y > 0)
+			{
+				if (_characterController.collisionFlags == CollisionFlags.Above)
+				{
+					_playerController.velocity.y = -1f;
+				}
+			}
+			_playerController.velocity += Physics.gravity * Time.deltaTime;
+		}
+		_moveInfo.IsGrounded = _characterController.isGrounded;
+	}
+
+	private void Friction()
+	{
+		_playerController.velocity.x = Mathf.Lerp(_playerController.velocity.x, 0, _characterConfig.GroundFriction * Time.deltaTime);
+		_playerController.velocity.z = Mathf.Lerp(_playerController.velocity.z, 0, _characterConfig.GroundFriction * Time.deltaTime);
+	}
+
+	private void MoveCharacter()
+	{
+		base.MoveCharacter();
+		if (_characterController.isGrounded)
+		{
+			_playerController.velocity.y = 0;
+		}
 	}
 }

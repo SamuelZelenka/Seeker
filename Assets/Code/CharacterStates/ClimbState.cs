@@ -34,6 +34,7 @@ public class ClimbState : ControllerState
 		return CharConfig.ClimbSpeedMultiplier;
 	}
 
+	//TODO: fix climbing movement
 	public override void Move()
 	{
 		float hInput = _moveInfo.HorizontalInput;
