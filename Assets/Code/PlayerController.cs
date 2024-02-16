@@ -41,10 +41,7 @@ public partial class PlayerController : MonoBehaviour
 	{
 		UpdateInputs();
 		controllerState.EarlyUpdate();
-		UpdateGravity();
 		controllerState.Update();
-		Friction();
-		MoveCharacter();
 		controllerState.LateUpdate();
 	}
 
@@ -80,39 +77,6 @@ public partial class PlayerController : MonoBehaviour
 		_moveInfo.JumpInput = Input.GetAxis("Jump");
 		_moveInfo.CrouchingInput = Input.GetAxis("Crouch");
 		_moveInfo.IsRunning = Input.GetKey(KeyCode.LeftShift);
-	}
-
-	private void UpdateGravity()
-	{
-		var enableGravity = !_characterController.isGrounded && !_moveInfo.IsClimbing;
-		if (enableGravity)
-		{
-			if (_characterController.velocity.y > 0)
-			{
-				if (_characterController.collisionFlags == CollisionFlags.Above)
-				{
-					velocity.y = -1f;
-				}
-			}
-			velocity += Physics.gravity * Time.deltaTime;
-		}
-		_moveInfo.IsGrounded = _characterController.isGrounded;
-	}
-
-	private void Friction()
-	{
-		velocity.x = Mathf.Lerp(velocity.x, 0, _characterConfig.GroundFriction * Time.deltaTime);
-		velocity.z = Mathf.Lerp(velocity.z, 0, _characterConfig.GroundFriction * Time.deltaTime);
-	}
-
-	private void MoveCharacter()
-	{
-		_characterController.Move(velocity * Time.deltaTime);
-
-		if (_characterController.isGrounded)
-		{
-			velocity.y = 0;
-		}
 	}
 
 	private void OnTriggerEnter(Collider other)
