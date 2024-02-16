@@ -45,4 +45,9 @@ public abstract class ControllerState
 	public virtual void Move() {}
 	public virtual void Jump() { }
 	public virtual void Crouch() { }
+
+	protected virtual void MoveCharacter()
+	{
+		_characterController.Move(_playerController.velocity * Time.deltaTime);
+	}
 }
