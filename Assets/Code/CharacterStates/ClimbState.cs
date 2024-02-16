@@ -26,6 +26,7 @@ public class ClimbState : ControllerState
 	{
 		_earlyActions.Add(Move);
 		_actions.Add(Jump);
+		_lateActions.Add(MoveCharacter);
 	}
 
 	public override float GetSpeedMultiplier(PlayerInput moveInfo, CharacterConfig CharConfig)
@@ -35,21 +36,36 @@ public class ClimbState : ControllerState
 
 	public override void Move()
 	{
-		float verticalInput = _moveInfo.VerticalInput;
+		float hInput = _moveInfo.HorizontalInput;
+		float vInput = _moveInfo.VerticalInput;
+
+		Transform playerTrans = _playerController.transform;
+		Vector3 inputDir = playerTrans.right * hInput;
+
+				if (_moveInfo.IsGrounded)
+			inputDir += playerTrans.forward * vInput;
 
 		_playerController.velocity = Vector3.zero;
 
-		var climbVelocity = (_playerController.transform.forward.y + _cameraController.transform.forward.y + 0.2f) * _characterConfig.ClimbSpeed;
+		var climbVelocity = (_playerController.transform.forward.y + _cameraController.transform.forward.y + 0.2f) * _characterConfig.ClimbSpeedMultiplier;
 
-		if (verticalInput < 0)
-			_playerController.velocity.y += Mathf.Abs(climbVelocity) * verticalInput;
+		if (vInput < 0)
+			_playerController.velocity.y += climbVelocity * vInput;
 		else
-			_playerController.velocity.y += climbVelocity * verticalInput;
-		
+			_playerController.velocity.y += climbVelocity * vInput;
+
+		var xSpeed = inputDir.x * _characterConfig.ClimbSpeedMultiplier;
+		var zSpeed = inputDir.z * _characterConfig.ClimbSpeedMultiplier;
+
+		_playerController.velocity.x += xSpeed;
+		_playerController.velocity.z += zSpeed;
 	}
 
 	public override void Jump()
 	{
+		if (_moveInfo.JumpInput == 0)
+			return;
+
 		var playerForward = _playerController.transform.forward;
 		var climbablePosition = _playerController.CurrentClimbable.transform.position;
 		var climbableDir = _playerController.transform.position - climbablePosition;
@@ -58,12 +74,11 @@ public class ClimbState : ControllerState
 
 		if (isFacingClimbable)
 		{
-			_playerController.velocity += -_playerController.transform.forward * _characterConfig.JumpImpulse * 0.15f;
+			_playerController.velocity += -_playerController.transform.forward * _characterConfig.JumpImpulse;
 		}
 		else
 		{
-			_playerController.velocity += _playerController.transform.forward * _characterConfig.JumpImpulse * 0.15f;
+			_playerController.velocity += _playerController.transform.forward * _characterConfig.JumpImpulse;
 		}
-		return;
 	}
 }
