@@ -1,14 +1,22 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public partial class PlayerController : MonoBehaviour
 {
+	private const string DEFAULT_CONTROLLER_STATE = "DEFAULT";
+	private const string CLIMB_CONTROLLER_STATE = "CLIMB";
+
 	public delegate void TriggerCollisionHandler(Collider collider);
+
 	public GameObject CurrentClimbable => _currentClimbable;
 
 	public TriggerCollisionHandler TriggerEnter;
 	public TriggerCollisionHandler TriggerExit;
 
-	public ControllerState controllerState;
+	public Dictionary<string, ControllerState> _controllerStates = new();
+
+	public ControllerState currentControllerState;
 
 	public Vector3 velocity;
 
@@ -24,7 +32,6 @@ public partial class PlayerController : MonoBehaviour
 
 	private GameObject _currentClimbable;
 	private CharacterController _characterController;
-	private PlayerData _playerData;
 
 	private void Start()
 	{
@@ -32,7 +39,9 @@ public partial class PlayerController : MonoBehaviour
 		_characterController.radius = _characterConfig.Radius;
 		_moveInfo = new PlayerInput();
 
-		controllerState = new DefaultState(_moveInfo, this, _cameraController, _characterConfig, _characterController);
+		_controllerStates.Add(DEFAULT_CONTROLLER_STATE, new DefaultState(_moveInfo, this, _cameraController, _characterConfig, _characterController));
+		_controllerStates.Add(CLIMB_CONTROLLER_STATE, new ClimbState(_moveInfo, this, _cameraController, _characterConfig, _characterController));
+		currentControllerState = _controllerStates[DEFAULT_CONTROLLER_STATE];
 
 		SetupTriggerActions();
 	}
@@ -40,9 +49,9 @@ public partial class PlayerController : MonoBehaviour
 	private void Update()
 	{
 		UpdateInputs();
-		controllerState.EarlyUpdate();
-		controllerState.Update();
-		controllerState.LateUpdate();
+		currentControllerState.EarlyUpdate();
+		currentControllerState.Update();
+		currentControllerState.LateUpdate();
 	}
 
 	private void SetupTriggerActions()
@@ -69,7 +78,6 @@ public partial class PlayerController : MonoBehaviour
 		};
 	}
 
-
 	private void UpdateInputs()
 	{
 		_moveInfo.HorizontalInput = Input.GetAxis("Horizontal");
@@ -81,7 +89,6 @@ public partial class PlayerController : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-
 		TriggerEnter?.Invoke(other);
 	}
 
@@ -93,12 +100,11 @@ public partial class PlayerController : MonoBehaviour
 		if (climbable != null)
 		{
 			velocity = Vector3.zero;
-			controllerState = new ClimbState(controllerState);
+			currentControllerState = _controllerStates[CLIMB_CONTROLLER_STATE];
 		}
 		else
 		{
-			controllerState = new DefaultState(controllerState);
+			currentControllerState = _controllerStates[DEFAULT_CONTROLLER_STATE];
 		}
-		
 	}
 }
