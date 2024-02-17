@@ -3,16 +3,18 @@ using UnityEngine;
 public partial class PlayerController : MonoBehaviour
 {
 	public delegate void TriggerCollisionHandler(Collider collider);
+	public GameObject CurrentClimbable => _currentClimbable;
 
 	public TriggerCollisionHandler TriggerEnter;
 	public TriggerCollisionHandler TriggerExit;
 
+	public ControllerState controllerState;
+
 	public Vector3 velocity;
 
-	private GameObject _currentClimbable;
-	private CharacterController _characterController;
-
-	public GameObject CurrentClimbable => _currentClimbable;
+	[Header("Camera")]
+	[SerializeField]
+	private CameraController _cameraController;
 
 	[SerializeField]
 	private PlayerInput _moveInfo;
@@ -20,11 +22,9 @@ public partial class PlayerController : MonoBehaviour
 	[SerializeField]
 	private CharacterConfig _characterConfig;
 
-	[Header("Camera")]
-	[SerializeField]
-	private CameraController _cameraController;
-
-	public ControllerState controllerState;
+	private GameObject _currentClimbable;
+	private CharacterController _characterController;
+	private PlayerData _playerData;
 
 	private void Start()
 	{
