@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01098f3888b5ae745bea44c1df1b2464, type: 3}
+  m_Name: PlayerConfig
+  m_EditorClassIdentifier: 
+  _airResistance: 8
+  _groundFriction: 10
+  _airAcceleration: 3
+  _groundAcceleration: 8
+  _jumpImpulse: 4
+  _maxSpeed: 100
+  _forwardRate: 1
+  _backwardRate: 0.752
+  _sideRate: 0.745
+  _climbSpeed: 1
+  radius: 0.4
+  _standHeight: 1.8
+  _crouchHeight: 0.782
+  _runSpeedMultiplier: 9
+  _crouchSpeedMultiplier: 1.5
+  _walkSpeedMultiplier: 4
+  _climbSpeedMultiplier: 3
