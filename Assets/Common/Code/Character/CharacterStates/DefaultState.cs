@@ -47,7 +47,7 @@ public class DefaultState : ControllerState
 
 		inputDir.Normalize();
 
-		var controllerState = _playerController.controllerState;
+		var controllerState = _playerController.currentControllerState;
 		var moveSpeedMultiplier = controllerState.GetSpeedMultiplier(_moveInfo, _characterConfig);
 
 		var xSpeed = inputDir.x * moveSpeedMultiplier * _characterConfig.GroundAcceleration;
