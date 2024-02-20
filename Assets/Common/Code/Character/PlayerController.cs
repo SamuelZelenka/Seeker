@@ -9,6 +9,7 @@ public partial class PlayerController : MonoBehaviour
 
 	public delegate void TriggerCollisionHandler(Collider collider);
 
+
 	public GameObject CurrentClimbable => _currentClimbable;
 
 	public TriggerCollisionHandler TriggerEnter;
@@ -20,6 +21,9 @@ public partial class PlayerController : MonoBehaviour
 
 	public Vector3 velocity;
 
+	public IntegerEvent OnSkillChanged;
+	public IntegerEvent OnSkillUsed;
+
 	[Header("Camera")]
 	[SerializeField]
 	private CameraController _cameraController;
@@ -28,7 +32,12 @@ public partial class PlayerController : MonoBehaviour
 	private PlayerInput _moveInfo;
 
 	[SerializeField]
+	private PlayerData _playerData;
+
+	[SerializeField]
 	private CharacterConfig _characterConfig;
+
+	private Skill _activeSkill;
 
 	private GameObject _currentClimbable;
 	private CharacterController _characterController;
@@ -43,6 +52,8 @@ public partial class PlayerController : MonoBehaviour
 		_controllerStates.Add(CLIMB_CONTROLLER_STATE, new ClimbState(_moveInfo, this, _cameraController, _characterConfig, _characterController));
 		currentControllerState = _controllerStates[DEFAULT_CONTROLLER_STATE];
 
+		//OnSkillChanged.Subscribe(SetActiveSkill);
+
 		SetupTriggerActions();
 	}
 
@@ -52,6 +63,16 @@ public partial class PlayerController : MonoBehaviour
 		currentControllerState.EarlyUpdate();
 		currentControllerState.Update();
 		currentControllerState.LateUpdate();
+	}
+
+	private void SetActiveSkill(int id)
+	{
+		_activeSkill = _playerData.GetSkill(id);
+	}
+
+	public void PerformSkill()
+	{
+		OnSkillUsed.Invoke(_activeSkill.GetID());
 	}
 
 	private void SetupTriggerActions()
