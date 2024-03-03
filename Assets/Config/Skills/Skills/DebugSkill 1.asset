@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c6c822f048379049b84566986e4bb17, type: 3}
-  m_Name: PlayerData
+  m_Script: {fileID: 11500000, guid: fff6735508199184782e3cbc7b97155b, type: 3}
+  m_Name: DebugSkill 1
   m_EditorClassIdentifier: 
-  availableSkills: []
-  activeSkills:
-  - Debug1
-  - Debug2
-  - PhantomStride
+  id: 1
+  icon: {fileID: 21300000, guid: 1488d900d5b9bac48afcdc3d1353d49f, type: 3}
+  displayName: debug1

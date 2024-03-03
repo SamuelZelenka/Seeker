@@ -5,6 +5,6 @@ public class PhantomStride : Skill
 {
 	public override void Perform()
 	{
-		Debug.Log("Performed Skill");
+		Debug.Log($"Performed Skill {displayName}");
 	}
 }
