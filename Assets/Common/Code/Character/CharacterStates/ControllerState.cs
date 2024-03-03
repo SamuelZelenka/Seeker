@@ -4,42 +4,39 @@ using UnityEngine;
 
 public abstract class ControllerState
 {
-	protected PlayerInput _moveInfo;
-	protected CharacterConfig _characterConfig;
-	protected PlayerController _playerController;
-	protected CharacterController _characterController;
-	protected CameraController _cameraController;
+	protected PlayerInput moveInfo;
+	protected PlayerData playerData;
+	protected SkillController skillController;
+	protected CharacterConfig characterConfig;
+	protected PlayerController playerController;
+	protected CharacterController characterController;
+	protected CameraController cameraController;
 
-	protected List<Action> _earlyActions = new();
-	protected List<Action> _actions = new();
-	protected List<Action> _lateActions = new();
-
-	public ControllerState(ControllerState controllerState)
-	{
-		_moveInfo = controllerState._moveInfo;
-		_characterConfig = controllerState._characterConfig;
-		_playerController = controllerState._playerController;
-		_characterController = controllerState._characterController;
-		_cameraController = controllerState._cameraController;
-	}
+	protected List<Action> earlyActions = new();
+	protected List<Action> actions = new();
+	protected List<Action> lateActions = new();
 
 	public ControllerState(
-		PlayerInput moveInfo,
+		PlayerInput playerInput,
+		PlayerData playerData,
+		SkillController skillController,
 		CharacterConfig characterConfig,
 		PlayerController playerController,
 		CharacterController characterController,
 		CameraController cameraController)
 	{
-		_moveInfo = moveInfo;
-		_characterConfig = characterConfig;
-		_playerController = playerController;
-		_characterController = characterController;
-		_cameraController = cameraController;
+		moveInfo = playerInput;
+		this.playerData = playerData;
+		this.skillController = skillController;
+		this.characterConfig = characterConfig;
+		this.playerController = playerController;
+		this.characterController = characterController;
+		this.cameraController = cameraController;
 	}
 
-	public virtual void EarlyUpdate() => _earlyActions.ForEach((a) => a.Invoke());
-	public virtual void Update() => _actions.ForEach((a) => a.Invoke());
-	public virtual void LateUpdate() => _lateActions.ForEach((a) => a.Invoke());
+	public virtual void EarlyUpdate() => earlyActions.ForEach((a) => a.Invoke());
+	public virtual void Update() => actions.ForEach((a) => a.Invoke());
+	public virtual void LateUpdate() => lateActions.ForEach((a) => a.Invoke());
 
 	public abstract float GetSpeedMultiplier(PlayerInput moveInfo, CharacterConfig CharConfig);
 	public virtual void Move() {}
@@ -48,6 +45,6 @@ public abstract class ControllerState
 
 	protected virtual void MoveCharacter()
 	{
-		_characterController.Move(_playerController.velocity * Time.deltaTime);
+		characterController.Move(playerController.velocity * Time.deltaTime);
 	}
 }

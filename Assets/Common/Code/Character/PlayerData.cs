@@ -4,10 +4,7 @@
 public class PlayerData : ScriptableObject
 {
 	[SerializeField]
-	private Skillset skillset;
-
-	public Skill GetSkill(int id)
-	{
-		return skillset.GetSkill(id);
-	}
+	public string[] availableSkills;
+	[SerializeField]
+	public string[] activeSkills = new string[3];
 }

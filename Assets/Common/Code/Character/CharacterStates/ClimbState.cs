@@ -2,18 +2,17 @@
 
 public class ClimbState : ControllerState
 {
-	public ClimbState(ControllerState controllerState) : base(controllerState) 
-	{
-		Setup();
-	}
-
 	public ClimbState(
 		PlayerInput moveInfo,
+		PlayerData playerData,
+		SkillController skillController,
 		PlayerController playerController,
 		CameraController cameraController,
 		CharacterConfig characterConfig,
 		CharacterController characterController) : base(
 		 moveInfo,
+		 playerData,
+		 skillController,
 		 characterConfig,
 		 playerController,
 		 characterController,
@@ -24,9 +23,9 @@ public class ClimbState : ControllerState
 
 	private void Setup()
 	{
-		_earlyActions.Add(Move);
-		_actions.Add(Jump);
-		_lateActions.Add(MoveCharacter);
+		earlyActions.Add(Move);
+		actions.Add(Jump);
+		lateActions.Add(MoveCharacter);
 	}
 
 	public override float GetSpeedMultiplier(PlayerInput moveInfo, CharacterConfig CharConfig)
@@ -37,49 +36,49 @@ public class ClimbState : ControllerState
 	//TODO: fix climbing movement
 	public override void Move()
 	{
-		float hInput = _moveInfo.HorizontalInput;
-		float vInput = _moveInfo.VerticalInput;
+		float hInput = moveInfo.HorizontalInput;
+		float vInput = moveInfo.VerticalInput;
 
-		Transform playerTrans = _playerController.transform;
+		Transform playerTrans = playerController.transform;
 		Vector3 inputDir = playerTrans.right * hInput;
 
-				if (_moveInfo.IsGrounded)
+				if (moveInfo.IsGrounded)
 			inputDir += playerTrans.forward * vInput;
 
-		_playerController.velocity = Vector3.zero;
+		playerController.velocity = Vector3.zero;
 
-		var climbVelocity = (_playerController.transform.forward.y + _cameraController.transform.forward.y + 0.2f) * _characterConfig.ClimbSpeedMultiplier;
+		var climbVelocity = (playerController.transform.forward.y + cameraController.transform.forward.y + 0.2f) * characterConfig.ClimbSpeedMultiplier;
 
 		if (vInput < 0)
-			_playerController.velocity.y += climbVelocity * vInput;
+			playerController.velocity.y += climbVelocity * vInput;
 		else
-			_playerController.velocity.y += climbVelocity * vInput;
+			playerController.velocity.y += climbVelocity * vInput;
 
-		var xSpeed = inputDir.x * _characterConfig.ClimbSpeedMultiplier;
-		var zSpeed = inputDir.z * _characterConfig.ClimbSpeedMultiplier;
+		var xSpeed = inputDir.x * characterConfig.ClimbSpeedMultiplier;
+		var zSpeed = inputDir.z * characterConfig.ClimbSpeedMultiplier;
 
-		_playerController.velocity.x += xSpeed;
-		_playerController.velocity.z += zSpeed;
+		playerController.velocity.x += xSpeed;
+		playerController.velocity.z += zSpeed;
 	}
 
 	public override void Jump()
 	{
-		if (_moveInfo.JumpInput == 0)
+		if (moveInfo.JumpInput == 0)
 			return;
 
-		var playerForward = _playerController.transform.forward;
-		var climbablePosition = _playerController.CurrentClimbable.transform.position;
-		var climbableDir = _playerController.transform.position - climbablePosition;
+		var playerForward = playerController.transform.forward;
+		var climbablePosition = playerController.CurrentClimbable.transform.position;
+		var climbableDir = playerController.transform.position - climbablePosition;
 		var dot = Vector3.Dot(playerForward, climbableDir);
 		var isFacingClimbable = dot < -0.3f;
 
 		if (isFacingClimbable)
 		{
-			_playerController.velocity += -_playerController.transform.forward * _characterConfig.JumpImpulse;
+			playerController.velocity += -playerController.transform.forward * characterConfig.JumpImpulse;
 		}
 		else
 		{
-			_playerController.velocity += _playerController.transform.forward * _characterConfig.JumpImpulse;
+			playerController.velocity += playerController.transform.forward * characterConfig.JumpImpulse;
 		}
 	}
 }
