@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class RepositoryManager : MonoBehaviour
 {
+	[SerializeField]
+	private SkillRepository _skillRepository;
+	public static SkillRepository SkillRepository => _instance._skillRepository;
+
+
+
 	private static RepositoryManager _instance;
 
 	public static RepositoryManager Instance
@@ -13,10 +19,9 @@ public class RepositoryManager : MonoBehaviour
 			if (_instance == null)
 			{
 				_instance = FindObjectOfType<RepositoryManager>();
-
 				if (_instance == null)
 				{
-					GameObject singletonObject = new GameObject(typeof(RepositoryManager).Name);
+					GameObject singletonObject = new GameObject("RepositoryManager");
 					_instance = singletonObject.AddComponent<RepositoryManager>();
 				}
 			}
@@ -24,19 +29,16 @@ public class RepositoryManager : MonoBehaviour
 		}
 	}
 
-	[SerializeField]
-	private SkillRepository _skillRepository;
-
 	private void Awake()
 	{
-		if (_instance != null && _instance != this)
-		{
-			Destroy(gameObject);
-		}
-		else
+		if (_instance == null)
 		{
 			_instance = this;
 			DontDestroyOnLoad(gameObject);
+		}
+		else
+		{
+			Destroy(gameObject);
 		}
 	}
 }
