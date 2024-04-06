@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DesignNoteEditor : EditorWindow
 {
-	private const float NOTE_SIZE = 100f;
+	private const float NOTE_SIZE = 64;
 	private const float DESCRIPTION_OFFSET = NOTE_SIZE/2 + 5;
 	private const float DESCRIPTION_SIZE = NOTE_SIZE * 4;
 	private static bool showIcons = false;
@@ -28,7 +28,10 @@ public class DesignNoteEditor : EditorWindow
 					screenPoint.x - NOTE_SIZE * 0.5f,
 					Screen.height - screenPoint.y - NOTE_SIZE * 0.5f);
 
-				GUI.Label(new Rect(descriptionPosition.x, descriptionPosition.y, NOTE_SIZE, NOTE_SIZE), note.icon);
+				if (GUI.Button(new Rect(descriptionPosition.x, descriptionPosition.y, NOTE_SIZE, NOTE_SIZE), note.icon))
+				{
+					Selection.activeObject = note;
+				}
 
 				GUI.Label(new Rect(descriptionPosition.x, descriptionPosition.y + DESCRIPTION_OFFSET, DESCRIPTION_SIZE, NOTE_SIZE), note.description);
 
