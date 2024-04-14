@@ -42,17 +42,18 @@ public class ClimbState : ControllerState
 		Transform playerTrans = playerController.transform;
 		Vector3 inputDir = playerTrans.right * hInput;
 
-				if (moveInfo.IsGrounded)
+		RaycastHit hit;
+		bool isGrounded = Physics.Raycast(playerTrans.position, -playerTrans.up, out hit, characterConfig.StandHeight * 0.55f);
+
+
+		if (isGrounded)
 			inputDir += playerTrans.forward * vInput;
 
 		playerController.velocity = Vector3.zero;
 
 		var climbVelocity = (playerController.transform.forward.y + cameraController.transform.forward.y + 0.2f) * characterConfig.ClimbSpeedMultiplier;
 
-		if (vInput < 0)
-			playerController.velocity.y += climbVelocity * vInput;
-		else
-			playerController.velocity.y += climbVelocity * vInput;
+		playerController.velocity.y += climbVelocity * vInput;
 
 		var xSpeed = inputDir.x * characterConfig.ClimbSpeedMultiplier;
 		var zSpeed = inputDir.z * characterConfig.ClimbSpeedMultiplier;
