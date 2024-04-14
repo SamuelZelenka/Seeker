@@ -25,11 +25,16 @@ public class CharacterConfig : ScriptableObject
 
 	public float GroundAcceleration => _groundAcceleration;
 
-	[Header("Input Forces")]
+	[Header("Jump")]
 	[SerializeField]
 	private float _jumpImpulse;
 
 	public float JumpImpulse => _jumpImpulse;
+
+	[SerializeField]
+	private float _jumpGracePeriod;
+
+	public float JumpGracePeriod => _jumpGracePeriod;
 
 	[Header("Directional Multiplier")]
 	[SerializeField]
@@ -49,12 +54,6 @@ public class CharacterConfig : ScriptableObject
 	private float _sidewaysMultiplier;
 
 	public float SidewaysMultiplier => _sidewaysMultiplier;
-
-	[SerializeField]
-	[Range(0.1f, 1f)]
-	private float _climbSpeed;
-
-	public float ClimbSpeed => _climbSpeed;
 
 	[Header("Scaling")]
 	[SerializeField]
@@ -87,8 +86,6 @@ public class CharacterConfig : ScriptableObject
 
 	[SerializeField]
 	private float _walkSpeedMultiplier = 1f;
-
-	public float WalkSpeedMultiplier => _walkSpeedMultiplier;
 
 	[SerializeField]
 	private float _climbSpeedMultiplier = 1f;
