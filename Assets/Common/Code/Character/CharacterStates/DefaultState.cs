@@ -40,20 +40,31 @@ public class DefaultState : ControllerState
 		float vInput = moveInfo.VerticalInput;
 
 		Transform playerTrans = playerController.transform;
-		Vector3 inputDir = playerTrans.right * hInput;
-		inputDir += playerTrans.forward * vInput;
+		Vector3 inputDir = playerTrans.right * hInput * characterConfig.SidewaysMultiplier;
+
+		var verticalMultiplier = vInput >= 0 ? characterConfig.ForwardMultiplier : characterConfig.BackwardMultiplier;
+		inputDir += playerTrans.forward * vInput * verticalMultiplier;
 
 		//TODO: Move Bobbing Speed somewhere else
 		CameraBobbing(inputDir);
 		//TODO: Move Bobbing Speed somewhere else
 
-		inputDir.Normalize();
-
 		var controllerState = playerController.currentControllerState;
 		var moveSpeedMultiplier = controllerState.GetSpeedMultiplier(moveInfo, characterConfig);
 
-		var xSpeed = inputDir.x * moveSpeedMultiplier * characterConfig.GroundAcceleration;
-		var zSpeed = inputDir.z * moveSpeedMultiplier * characterConfig.GroundAcceleration;
+		var xSpeed = inputDir.x * moveSpeedMultiplier;
+		var zSpeed = inputDir.z * moveSpeedMultiplier;
+
+		if (moveInfo.IsGrounded)
+		{
+			xSpeed *= characterConfig.GroundAcceleration;
+			zSpeed *= characterConfig.GroundAcceleration;
+		}
+        else
+        {
+			xSpeed *= characterConfig.AirAcceleration;
+			zSpeed *= characterConfig.AirAcceleration;
+		}
 
 		playerController.velocity.x += xSpeed * Time.deltaTime;
 		playerController.velocity.z += zSpeed * Time.deltaTime;
@@ -112,8 +123,16 @@ public class DefaultState : ControllerState
 
 	private void Friction()
 	{
-		playerController.velocity.x = Mathf.Lerp(playerController.velocity.x, 0, characterConfig.GroundFriction * Time.deltaTime);
-		playerController.velocity.z = Mathf.Lerp(playerController.velocity.z, 0, characterConfig.GroundFriction * Time.deltaTime);
+		if (moveInfo.IsGrounded)
+		{
+			playerController.velocity.x = Mathf.Lerp(playerController.velocity.x, 0, characterConfig.GroundFriction * Time.deltaTime);
+			playerController.velocity.z = Mathf.Lerp(playerController.velocity.z, 0, characterConfig.GroundFriction * Time.deltaTime);
+		}
+		else
+		{
+			playerController.velocity.x = Mathf.Lerp(playerController.velocity.x, 0, characterConfig.AirResistance * Time.deltaTime);
+			playerController.velocity.z = Mathf.Lerp(playerController.velocity.z, 0, characterConfig.AirResistance * Time.deltaTime);
+		}
 	}
 
 	private void MoveCharacter()

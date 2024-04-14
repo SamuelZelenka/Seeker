@@ -39,7 +39,7 @@ public abstract class ControllerState
 	public virtual void LateUpdate() => lateActions.ForEach((a) => a.Invoke());
 
 	public abstract float GetSpeedMultiplier(PlayerInput moveInfo, CharacterConfig CharConfig);
-	public virtual void Move() {}
+	public virtual void Move() { }
 	public virtual void Jump() { }
 	public virtual void Crouch() { }
 

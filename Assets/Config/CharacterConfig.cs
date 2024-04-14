@@ -10,7 +10,6 @@ public class CharacterConfig : ScriptableObject
 	public float AirResistance => _airResistance;
 
 	[SerializeField]
-	[Range(0f, 10f)]
 	private float _groundFriction;
 
 	public float GroundFriction => _groundFriction;
@@ -32,28 +31,24 @@ public class CharacterConfig : ScriptableObject
 
 	public float JumpImpulse => _jumpImpulse;
 
+	[Header("Directional Multiplier")]
 	[SerializeField]
-	private float _maxSpeed;
+	[Range(0.1f, 1f)]
+	private float _forwardMultiplier;
 
-	public float MaxSpeed => _maxSpeed;
+	public float ForwardMultiplier => _forwardMultiplier;
 
 	[SerializeField]
 	[Range(0.1f, 1f)]
-	private float _forwardRate;
+	private float _backwardMultiplier;
 
-	public float ForwardRate => _forwardRate;
-
-	[SerializeField]
-	[Range(0.1f, 1f)]
-	private float _backwardRate;
-
-	public float BackwardRate => _backwardRate;
+	public float BackwardMultiplier => _backwardMultiplier;
 
 	[SerializeField]
 	[Range(0.1f, 1f)]
-	private float _sideRate;
+	private float _sidewaysMultiplier;
 
-	public float SideRate => _sideRate;
+	public float SidewaysMultiplier => _sidewaysMultiplier;
 
 	[SerializeField]
 	[Range(0.1f, 1f)]
