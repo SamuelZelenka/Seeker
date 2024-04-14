@@ -14,18 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _airResistance: 3
   _groundFriction: 10
-  _airAcceleration: 2
-  _groundAcceleration: 10
+  _airAcceleration: 8
+  _groundAcceleration: 25
   _jumpImpulse: 4
-  _maxSpeed: 10
-  _forwardRate: 0.1
-  _backwardRate: 1
-  _sideRate: 1
-  _climbSpeed: 1
-  radius: 0.5
+  _jumpGracePeriod: 8
+  _forwardMultiplier: 1
+  _backwardMultiplier: 0.7
+  _sidewaysMultiplier: 0.8
+  radius: 0.4
   _standHeight: 1.8
   _crouchHeight: 0.5
-  _runSpeedMultiplier: 5
-  _crouchSpeedMultiplier: 1.5
+  _runSpeedMultiplier: 2
+  _crouchSpeedMultiplier: 0.5
   _walkSpeedMultiplier: 4
-  _climbSpeedMultiplier: 3
+  _climbSpeedMultiplier: 2
