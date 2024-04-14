@@ -2,6 +2,7 @@
 
 public class DefaultState : ControllerState
 {
+	private float _lastGroundTime = 0;
 	public DefaultState(
 		PlayerInput moveInfo,
 		PlayerData playerData,
@@ -80,10 +81,11 @@ public class DefaultState : ControllerState
 
 	public override void Jump()
 	{
-		var allowJump = moveInfo.IsGrounded;
+		var allowJump = _lastGroundTime < Time.time + characterConfig.JumpGracePeriod;
 
 		if (moveInfo.JumpInput > 0 && allowJump)
 		{
+			_lastGroundTime = Mathf.Infinity;
 			playerController.velocity.y = characterConfig.JumpImpulse;
 		}
 	}
@@ -119,6 +121,10 @@ public class DefaultState : ControllerState
 			playerController.velocity += Physics.gravity * Time.deltaTime;
 		}
 		moveInfo.IsGrounded = characterController.isGrounded;
+		if (moveInfo.IsGrounded)
+		{
+			_lastGroundTime = Time.time;
+		}
 	}
 
 	private void Friction()
@@ -135,7 +141,7 @@ public class DefaultState : ControllerState
 		}
 	}
 
-	private void MoveCharacter()
+	protected override void MoveCharacter()
 	{
 		base.MoveCharacter();
 		if (characterController.isGrounded)
