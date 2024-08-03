@@ -41,7 +41,7 @@ public class SkillSelectorUI : MonoBehaviour
 	private void Start()
 	{
 
-		var skillController = _playerController.skillController;
+		var skillController = _playerController.SkillController;
 		_icons[2].sprite = skillController.GetSkillByIndex(skillController.GetActiveSkillIndex()).GetIcon();
 
 		var nextSkillIndex = MathExtra.WrapModulo(skillController.GetActiveSkillIndex() + 1, skillController.GetActiveSkillsCount());

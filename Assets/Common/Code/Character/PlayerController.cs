@@ -2,11 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public partial class PlayerController : MonoBehaviour
 {
-	private const string DEFAULT_CONTROLLER_STATE = "DEFAULT";
-	private const string CLIMB_CONTROLLER_STATE = "CLIMB";
-
 	public delegate void TriggerCollisionHandler(Collider collider);
 
 	public GameObject CurrentClimbable => _currentClimbable;
@@ -14,7 +11,7 @@ public class PlayerController : MonoBehaviour
 	public TriggerCollisionHandler TriggerEnter;
 	public TriggerCollisionHandler TriggerExit;
 
-	public Dictionary<string, ControllerState> _controllerStates = new();
+	public Dictionary<Type, ControllerState> _controllerStates = new();
 
 	public ControllerState currentControllerState;
 
@@ -24,6 +21,8 @@ public class PlayerController : MonoBehaviour
 	public SkillEvent OnPreviousSkill;
 	public SkillEvent OnSkillChanged;
 	public SkillEvent OnSkillUsed;
+
+	public SkillController SkillController;
 
 	[Header("Camera")]
 	[SerializeField]
@@ -35,8 +34,6 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	private PlayerData _playerData;
 
-	public SkillController skillController;
-
 	[SerializeField]
 	private CharacterConfig _characterConfig;
 
@@ -45,13 +42,14 @@ public class PlayerController : MonoBehaviour
 
 	private void Start()
 	{
-		skillController = new SkillController(_playerData, OnNextSkill, OnPreviousSkill, OnSkillUsed, OnSkillChanged);
+		SkillController = new SkillController(_playerData, OnNextSkill, OnPreviousSkill, OnSkillUsed, OnSkillChanged);
 		_characterController = GetComponent<CharacterController>();
 		_characterController.radius = _characterConfig.Radius;
 
-		_controllerStates.Add(DEFAULT_CONTROLLER_STATE, new DefaultState(_inputData, _playerData, skillController, this, _cameraController, _characterConfig, _characterController));
-		_controllerStates.Add(CLIMB_CONTROLLER_STATE, new ClimbState(_inputData, _playerData, skillController, this, _cameraController, _characterConfig, _characterController));
-		currentControllerState = _controllerStates[DEFAULT_CONTROLLER_STATE];
+		_controllerStates.Add(typeof(DefaultState), new DefaultState(_inputData, _playerData, SkillController, this, _cameraController, _characterConfig, _characterController));
+		_controllerStates.Add(typeof(ClimbState), new ClimbState(_inputData, _playerData, SkillController, this, _cameraController, _characterConfig, _characterController));
+		_controllerStates.Add(typeof(VaultState), new VaultState(_inputData, _playerData, SkillController, this, _cameraController, _characterConfig, _characterController));
+		currentControllerState = _controllerStates[typeof(DefaultState)];
 
 		//OnSkillChanged.Subscribe(SetActiveSkill);
 
@@ -63,31 +61,18 @@ public class PlayerController : MonoBehaviour
 		UpdateInputs();
 		currentControllerState.EarlyUpdate();
 		currentControllerState.Update();
+		UpdateLedgeDetection();
 		currentControllerState.LateUpdate();
+	}
+	public T SetControllerState<T>() where T : ControllerState
+	{
+		currentControllerState = _controllerStates[typeof(T)];
+		return currentControllerState as T;
 	}
 
 	private void SetupTriggerActions()
 	{
 		SetupClimbable();
-	}
-
-	private void SetupClimbable()
-	{
-		TriggerEnter += (c) =>
-		{
-			if (c.CompareTag("Climbable"))
-			{
-				SetClimbing(c.gameObject);
-			}
-		};
-
-		TriggerExit += (c) =>
-		{
-			if (c.CompareTag("Climbable"))
-			{
-				SetClimbing(null);
-			}
-		};
 	}
 
 	private void UpdateInputs()
@@ -104,19 +89,8 @@ public class PlayerController : MonoBehaviour
 		TriggerEnter?.Invoke(other);
 	}
 
-	private void OnTriggerExit(Collider other) => TriggerExit?.Invoke(other);
-
-	private void SetClimbing(GameObject climbable)
+	private void OnTriggerExit(Collider other)
 	{
-		_currentClimbable = climbable;
-		if (climbable != null)
-		{
-			velocity = Vector3.zero;
-			currentControllerState = _controllerStates[CLIMB_CONTROLLER_STATE];
-		}
-		else
-		{
-			currentControllerState = _controllerStates[DEFAULT_CONTROLLER_STATE];
-		}
+		TriggerExit?.Invoke(other);
 	}
 }

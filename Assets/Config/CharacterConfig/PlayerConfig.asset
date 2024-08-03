@@ -28,3 +28,82 @@ MonoBehaviour:
   _crouchSpeedMultiplier: 0.5
   _walkSpeedMultiplier: 4
   _climbSpeedMultiplier: 2
+  _vaultSpeed:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.0015646489
+      value: 0.4990958
+      inSlope: 20.773733
+      outSlope: 20.773733
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.026042685
+      value: 1.007596
+      inSlope: 18.609926
+      outSlope: 18.609926
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.043460727
+      value: 1.2940552
+      inSlope: -5.100708
+      outSlope: -5.100708
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.067997955
+      value: 0.6401986
+      inSlope: -1.5161552
+      outSlope: -1.5161552
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.16703258
+      value: 2.9789238
+      inSlope: -0.15492555
+      outSlope: -0.15492555
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.59079206
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.3146
+      value: 1.1213429
+      inSlope: -3.2538953
+      outSlope: -3.2538953
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.4800539
+      value: 2.12734
+      inSlope: 1.9560198
+      outSlope: 1.9560198
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -2.1681864
+      outSlope: -2.1681864
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _ledgeDetectionRange: 1

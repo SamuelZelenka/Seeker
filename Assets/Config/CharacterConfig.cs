@@ -87,8 +87,19 @@ public class CharacterConfig : ScriptableObject
 	[SerializeField]
 	private float _walkSpeedMultiplier = 1f;
 
+	[Header("Climbing")]
+
 	[SerializeField]
 	private float _climbSpeedMultiplier = 1f;
 
 	public float ClimbSpeedMultiplier => _climbSpeedMultiplier;
+
+	[SerializeField]
+	private AnimationCurve _vaultSpeed;
+
+	[SerializeField]
+	private float _ledgeDetectionRange;
+	public float LedgeDetectionRange => _ledgeDetectionRange;
+
+	public float VaultSpeed(float t) => _vaultSpeed.Evaluate(t);
 }

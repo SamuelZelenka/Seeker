@@ -67,8 +67,10 @@ public class DefaultState : ControllerState
 			zSpeed *= characterConfig.AirAcceleration;
 		}
 
-		playerController.velocity.x += xSpeed * Time.deltaTime;
-		playerController.velocity.z += zSpeed * Time.deltaTime;
+		var normalizedHorizontalSpeed = new Vector2(xSpeed, zSpeed);
+
+		playerController.velocity.x += normalizedHorizontalSpeed.x * Time.deltaTime;
+		playerController.velocity.z += normalizedHorizontalSpeed.y * Time.deltaTime;
 	}
 
 	//TODO: Move Bobbing Speed somewhere else
@@ -83,10 +85,19 @@ public class DefaultState : ControllerState
 	{
 		var allowJump = _lastGroundTime < Time.time + characterConfig.JumpGracePeriod;
 
-		if (moveInfo.JumpInput > 0 && allowJump)
+		if (moveInfo.JumpInput > 0)
 		{
-			_lastGroundTime = Mathf.Infinity;
-			playerController.velocity.y = characterConfig.JumpImpulse;
+			if (playerController.IsFacingLedge)
+			{
+				var vaultState = playerController.SetControllerState<VaultState>();
+				vaultState.Start(playerController.Ledge + Vector3.up * characterController.height * 0.5f);
+				return;
+			}
+			if (allowJump)
+			{
+				_lastGroundTime = Mathf.Infinity;
+				playerController.velocity.y = characterConfig.JumpImpulse;
+			}
 		}
 	}
 
