@@ -87,6 +87,8 @@ public class CharacterConfig : ScriptableObject
 	[SerializeField]
 	private float _walkSpeedMultiplier = 1f;
 
+	public float WalkSpeedMultiplier => _walkSpeedMultiplier;
+
 	[Header("Climbing")]
 
 	[SerializeField]
@@ -96,6 +98,11 @@ public class CharacterConfig : ScriptableObject
 
 	[SerializeField]
 	private AnimationCurve _vaultSpeed;
+
+	[Range(0,180)]
+	[SerializeField]
+	private float _LedgeDetectionAngle;
+	public float LedgeDetectionAngle => _LedgeDetectionAngle;
 
 	[SerializeField]
 	private float _ledgeDetectionRange;

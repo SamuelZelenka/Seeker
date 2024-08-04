@@ -111,7 +111,7 @@ public class DefaultState : ControllerState
 
 	public override float GetSpeedMultiplier(PlayerInput moveInfo, CharacterConfig CharConfig)
 	{
-		float moveSpeedMultiplier = moveInfo.IsRunning ? CharConfig.RunSpeedMultiplier : 1;
+		float moveSpeedMultiplier = moveInfo.IsRunning ? CharConfig.RunSpeedMultiplier : CharConfig.WalkSpeedMultiplier;
 		moveSpeedMultiplier = moveInfo.CrouchingInput > 0 ? CharConfig.CrouchSpeedMultiplier : moveSpeedMultiplier;
 		moveSpeedMultiplier = moveInfo.IsClimbing ? CharConfig.ClimbSpeedMultiplier : moveSpeedMultiplier;
 		return moveSpeedMultiplier;

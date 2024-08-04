@@ -63,12 +63,19 @@ public partial class PlayerController : MonoBehaviour
 
 	private bool CheckFacingLedge(out RaycastHit hit)
 	{
+
 		var isFacing = false;
 		_ray = new Ray(_cameraController.transform.position, _cameraController.transform.forward);
 
 		var range = _characterConfig.LedgeDetectionRange;
 
 		Physics.Raycast(_ray, out hit, range, LayerMask.GetMask("Climbable"));
+
+		if (Vector3.Angle(_cameraController.transform.forward, _characterController.transform.forward) > _characterConfig.LedgeDetectionAngle)
+		{
+			return false;
+		}
+
 		if (hit.transform != null)
 		{
 			var ledgePos = hit.collider.ClosestPoint(hit.point + new Vector3(0, 2, 0)); ;
