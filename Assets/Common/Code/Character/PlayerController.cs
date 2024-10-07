@@ -16,6 +16,7 @@ public partial class PlayerController : MonoBehaviour
 	public ControllerState currentControllerState;
 
 	public Vector3 velocity;
+	public float crouchNormalizedState;
 
 	public SkillEvent OnNextSkill;
 	public SkillEvent OnPreviousSkill;
@@ -42,13 +43,29 @@ public partial class PlayerController : MonoBehaviour
 
 	private void Start()
 	{
-		SkillController = new SkillController(_playerData, OnNextSkill, OnPreviousSkill, OnSkillUsed, OnSkillChanged);
+		SkillController = new SkillController(
+			_playerData,
+			OnNextSkill,
+			OnPreviousSkill,
+			OnSkillUsed,
+			OnSkillChanged);
+
 		_characterController = GetComponent<CharacterController>();
 		_characterController.radius = _characterConfig.Radius;
 
-		_controllerStates.Add(typeof(DefaultState), new DefaultState(_inputData, _playerData, SkillController, this, _cameraController, _characterConfig, _characterController));
-		_controllerStates.Add(typeof(ClimbState), new ClimbState(_inputData, _playerData, SkillController, this, _cameraController, _characterConfig, _characterController));
-		_controllerStates.Add(typeof(VaultState), new VaultState(_inputData, _playerData, SkillController, this, _cameraController, _characterConfig, _characterController));
+		var args = new ControllerStateArgs(
+			_inputData,
+			_playerData,
+			SkillController,
+			_characterConfig,
+			this,
+			_characterController,
+			_cameraController);
+
+		_controllerStates.Add(typeof(DefaultState), new DefaultState(args));
+		_controllerStates.Add(typeof(ClimbState), new ClimbState(args));
+        _controllerStates.Add(typeof(ClimbState), new ClimbState(args));
+		_controllerStates.Add(typeof(VaultState), new VaultState(args));
 		currentControllerState = _controllerStates[typeof(DefaultState)];
 
 		//OnSkillChanged.Subscribe(SetActiveSkill);
@@ -67,6 +84,7 @@ public partial class PlayerController : MonoBehaviour
 	public T SetControllerState<T>() where T : ControllerState
 	{
 		currentControllerState = _controllerStates[typeof(T)];
+		currentControllerState.Start();
 		return currentControllerState as T;
 	}
 
@@ -82,6 +100,12 @@ public partial class PlayerController : MonoBehaviour
 		_inputData.JumpInput = Input.GetAxis("Jump");
 		_inputData.CrouchingInput = Input.GetAxis("Crouch");
 		_inputData.IsRunning = Input.GetKey(KeyCode.LeftShift);
+	}
+
+	public void AddToCrouchState(float amount)
+	{
+		crouchNormalizedState += amount;
+		crouchNormalizedState = Mathf.Clamp01(crouchNormalizedState);
 	}
 
 	private void OnTriggerEnter(Collider other)

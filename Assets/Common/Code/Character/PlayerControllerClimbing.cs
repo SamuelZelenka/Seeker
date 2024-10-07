@@ -13,7 +13,6 @@ public partial class PlayerController : MonoBehaviour
 	private GameObject _ledgeMarker;
 
 	private Ray _ray;
-	private Ray _edgeRay;
 
 	private void UpdateLedgeDetection()
 	{
@@ -63,7 +62,6 @@ public partial class PlayerController : MonoBehaviour
 
 	private bool CheckFacingLedge(out RaycastHit hit)
 	{
-
 		var isFacing = false;
 		_ray = new Ray(_cameraController.transform.position, _cameraController.transform.forward);
 
@@ -91,21 +89,6 @@ public partial class PlayerController : MonoBehaviour
 		}
 
 		return isFacing;
-	}
-
-	Vector3 ProjectAndRotateVector(Vector3 normal, Vector3 pointOnPlane, Vector3 targetPoint)
-	{
-
-		Vector3 directionToTarget = targetPoint - pointOnPlane;
-		float distanceToPlane = Vector3.Dot(directionToTarget, normal);
-		Vector3 projectedPoint = targetPoint - (normal * distanceToPlane);
-
-		Vector3 vectorOnPlane = projectedPoint - pointOnPlane;
-
-		if (vectorOnPlane.sqrMagnitude > 0)
-			return vectorOnPlane.normalized;
-		else
-			return Vector3.zero;
 	}
 
 	private void OnDrawGizmos()

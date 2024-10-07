@@ -22,7 +22,6 @@ public class PlayerData : SerializedScriptableObject
 	{
 		data = SaveSystem.LoadData<PlayerDataContainer>(ENCRYPT_KEY, "PlayerDataTest");
 	}
-
 }
 
 [Serializable]
@@ -32,5 +31,4 @@ public class PlayerDataContainer
 	public string[] availableSkills;
 	[SerializeField]
 	public string[] activeSkills = new string[3];
-
 }

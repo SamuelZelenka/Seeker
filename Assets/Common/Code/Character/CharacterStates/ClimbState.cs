@@ -2,21 +2,7 @@
 
 public class ClimbState : ControllerState
 {
-	public ClimbState(
-		PlayerInput moveInfo,
-		PlayerData playerData,
-		SkillController skillController,
-		PlayerController playerController,
-		CameraController cameraController,
-		CharacterConfig characterConfig,
-		CharacterController characterController) : base(
-		 moveInfo,
-		 playerData,
-		 skillController,
-		 characterConfig,
-		 playerController,
-		 characterController,
-		 cameraController)
+	public ClimbState(ControllerStateArgs args) : base(args)
 	{
 		Setup();
 	}

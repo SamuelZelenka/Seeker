@@ -1,49 +1,47 @@
-﻿using UnityEngine;
-
+﻿using System.Collections;
+using UnityEngine;
 
 public class CrouchState : DefaultState
 {
-	public CrouchState(
-		PlayerInput moveInfo,
-		PlayerData playerData,
-		SkillController skillController,
-		PlayerController playerController,
-		CameraController cameraController,
-		CharacterConfig characterConfig,
-		CharacterController characterController) : base(
-			moveInfo,
-			playerData,
-			skillController,
-			playerController,
-			cameraController,
-			characterConfig,
-			characterController)
+	public CrouchState(ControllerStateArgs args) : base(args)
 	{
+		startActions.Add(() => playerController.StartCoroutine(Process()));
 		base.moveInfo = moveInfo;
 		Setup();
 	}
+
+	private bool _isCrouching;
+
+    public override void Update()
+	{
+		if (moveInfo.CrouchingInput <= 0)
+		{
+			playerController.SetControllerState<DefaultState>();
+			_isCrouching = false;
+		}
+	}
+	
+	private IEnumerator Process()
+	{
+        var standHeight = characterConfig.StandHeight;
+        var crouchHeight = characterConfig.CrouchHeight;
+		var target = _isCrouching ? crouchHeight : standHeight;
+		while (!Mathf.Approximately(characterController.height, target))
+		{
+			var t = playerController.crouchNormalizedState;
+			var newHeight = Mathf.Lerp(standHeight, crouchHeight, t);
+            characterController.height = newHeight;
+			yield return null;
+		}
+    }
 }
 
 public class DefaultState : ControllerState
 {
 	private float _lastGroundTime = 0;
-	public DefaultState(
-		PlayerInput moveInfo,
-		PlayerData playerData,
-		SkillController skillController,
-		PlayerController playerController,
-		CameraController cameraController,
-		CharacterConfig characterConfig,
-		CharacterController characterController) : base(
-		 moveInfo,
-		 playerData,
-		 skillController,
-		 characterConfig,
-		 playerController,
-		 characterController,
-		 cameraController)
+	public DefaultState(ControllerStateArgs args) : base(args)
 	{
-		base.moveInfo = moveInfo;
+		moveInfo = moveInfo;
 		Setup();
 	}
 
@@ -52,7 +50,6 @@ public class DefaultState : ControllerState
 		earlyActions.Add(Move);
 		earlyActions.Add(UpdateGravity);
 		actions.Add(Jump);
-		actions.Add(Crouch);
 		actions.Add(NextSkill);
 		actions.Add(PreviousSkill);
 		lateActions.Add(Friction);
@@ -124,26 +121,6 @@ public class DefaultState : ControllerState
 				playerController.velocity.y = characterConfig.JumpImpulse;
 			}
 		}
-	}
-
-	private float _crouchT;
-
-	public override void Crouch()
-	{
-		var standHeight = characterConfig.StandHeight;
-		var crouchHeight = characterConfig.CrouchHeight;
-
-		if (moveInfo.CrouchingInput > 0)
-		{
-			_crouchT += 2 * Time.deltaTime;
-		}
-		else
-		{
-			_crouchT -= 2 * Time.deltaTime;
-		}
-
-		_crouchT = Mathf.Clamp01(_crouchT);
-		characterController.height = Mathf.Lerp(standHeight, crouchHeight, _crouchT);
 	}
 
 	public override float GetSpeedMultiplier(PlayerInput moveInfo, CharacterConfig CharConfig)

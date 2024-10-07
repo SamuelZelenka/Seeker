@@ -6,5 +6,6 @@ public class PhantomStride : Skill
 	public override void Perform()
 	{
 		Debug.Log($"Performed Skill {displayName}");
+		throw new System.NotImplementedException();	
 	}
 }

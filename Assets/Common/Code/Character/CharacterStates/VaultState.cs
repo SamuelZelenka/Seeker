@@ -1,6 +1,4 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class VaultState : ControllerState
 {
@@ -9,24 +7,11 @@ public class VaultState : ControllerState
 
 	private float _currentTrajectory;
 
-	public VaultState(
-		PlayerInput moveInfo,
-		PlayerData playerData,
-		SkillController skillController,
-		PlayerController playerController,
-		CameraController cameraController,
-		CharacterConfig characterConfig,
-		CharacterController characterController) : base(
-		 moveInfo,
-		 playerData,
-		 skillController,
-		 characterConfig,
-		 playerController,
-		 characterController,
-		 cameraController)
+	public VaultState(ControllerStateArgs args) : base(args)
 	{
 		Setup();
 	}
+
 	private void Setup()
 	{
 		earlyActions.Add(Move);
