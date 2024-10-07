@@ -1,5 +1,29 @@
 ﻿using UnityEngine;
 
+
+public class CrouchState : DefaultState
+{
+	public CrouchState(
+		PlayerInput moveInfo,
+		PlayerData playerData,
+		SkillController skillController,
+		PlayerController playerController,
+		CameraController cameraController,
+		CharacterConfig characterConfig,
+		CharacterController characterController) : base(
+			moveInfo,
+			playerData,
+			skillController,
+			playerController,
+			cameraController,
+			characterConfig,
+			characterController)
+	{
+		base.moveInfo = moveInfo;
+		Setup();
+	}
+}
+
 public class DefaultState : ControllerState
 {
 	private float _lastGroundTime = 0;
@@ -23,7 +47,7 @@ public class DefaultState : ControllerState
 		Setup();
 	}
 
-	private void Setup()
+	protected virtual void Setup()
 	{
 		earlyActions.Add(Move);
 		earlyActions.Add(UpdateGravity);
@@ -49,6 +73,7 @@ public class DefaultState : ControllerState
 		//TODO: Move Bobbing Speed somewhere else
 		CameraBobbing(inputDir);
 		//TODO: Move Bobbing Speed somewhere else
+
 
 		var controllerState = playerController.currentControllerState;
 		var moveSpeedMultiplier = controllerState.GetSpeedMultiplier(moveInfo, characterConfig);
@@ -101,19 +126,30 @@ public class DefaultState : ControllerState
 		}
 	}
 
+	private float _crouchT;
+
 	public override void Crouch()
 	{
 		var standHeight = characterConfig.StandHeight;
 		var crouchHeight = characterConfig.CrouchHeight;
-		var crouchT = moveInfo.CrouchingInput * Time.time;
-		characterController.height = Mathf.Lerp(standHeight, crouchHeight, crouchT);
+
+		if (moveInfo.CrouchingInput > 0)
+		{
+			_crouchT += 2 * Time.deltaTime;
+		}
+		else
+		{
+			_crouchT -= 2 * Time.deltaTime;
+		}
+
+		_crouchT = Mathf.Clamp01(_crouchT);
+		characterController.height = Mathf.Lerp(standHeight, crouchHeight, _crouchT);
 	}
 
 	public override float GetSpeedMultiplier(PlayerInput moveInfo, CharacterConfig CharConfig)
 	{
 		float moveSpeedMultiplier = moveInfo.IsRunning ? CharConfig.RunSpeedMultiplier : CharConfig.WalkSpeedMultiplier;
 		moveSpeedMultiplier = moveInfo.CrouchingInput > 0 ? CharConfig.CrouchSpeedMultiplier : moveSpeedMultiplier;
-		moveSpeedMultiplier = moveInfo.IsClimbing ? CharConfig.ClimbSpeedMultiplier : moveSpeedMultiplier;
 		return moveSpeedMultiplier;
 	}
 

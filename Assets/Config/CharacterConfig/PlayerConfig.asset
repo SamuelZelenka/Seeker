@@ -23,10 +23,10 @@ MonoBehaviour:
   _sidewaysMultiplier: 0.8
   radius: 0.4
   _standHeight: 1.8
-  _crouchHeight: 0.5
-  _runSpeedMultiplier: 2
+  _crouchHeight: 0.1
+  _runSpeedMultiplier: 1.9
   _crouchSpeedMultiplier: 0.5
-  _walkSpeedMultiplier: 4
+  _walkSpeedMultiplier: 1
   _climbSpeedMultiplier: 2
   _vaultSpeed:
     serializedVersion: 2
@@ -106,4 +106,5 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _ledgeDetectionRange: 1
+  _LedgeDetectionAngle: 60
+  _ledgeDetectionRange: 1.2
