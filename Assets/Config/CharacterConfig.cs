@@ -85,6 +85,12 @@ public class CharacterConfig : ScriptableObject
 	public float CrouchSpeedMultiplier => _crouchSpeedMultiplier;
 
 	[SerializeField]
+	private float _crouchTime;
+
+	public float CrouchTime => _crouchTime;
+
+
+	[SerializeField]
 	private float _walkSpeedMultiplier = 1f;
 
 	public float WalkSpeedMultiplier => _walkSpeedMultiplier;

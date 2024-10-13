@@ -14,12 +14,11 @@ public class ClimbState : ControllerState
 		lateActions.Add(MoveCharacter);
 	}
 
-	public override float GetSpeedMultiplier(PlayerInput moveInfo, CharacterConfig CharConfig)
+	public override float GetSpeedMultiplier(MoveInfo moveInfo, CharacterConfig CharConfig)
 	{
 		return CharConfig.ClimbSpeedMultiplier;
 	}
 
-	//TODO: fix climbing movement
 	public override void Move()
 	{
 		float hInput = moveInfo.HorizontalInput;
@@ -30,7 +29,6 @@ public class ClimbState : ControllerState
 
 		RaycastHit hit;
 		bool isGrounded = Physics.Raycast(playerTrans.position, -playerTrans.up, out hit, characterConfig.StandHeight * 0.55f);
-
 
 		if (isGrounded)
 			inputDir += playerTrans.forward * vInput;

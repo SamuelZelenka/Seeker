@@ -16,7 +16,6 @@ public partial class PlayerController : MonoBehaviour
 	public ControllerState currentControllerState;
 
 	public Vector3 velocity;
-	public float crouchNormalizedState;
 
 	public SkillEvent OnNextSkill;
 	public SkillEvent OnPreviousSkill;
@@ -30,7 +29,7 @@ public partial class PlayerController : MonoBehaviour
 	private CameraController _cameraController;
 
 	[SerializeField]
-	private PlayerInput _inputData;
+	private MoveInfo _inputData;
 
 	[SerializeField]
 	private PlayerData _playerData;
@@ -64,7 +63,6 @@ public partial class PlayerController : MonoBehaviour
 
 		_controllerStates.Add(typeof(DefaultState), new DefaultState(args));
 		_controllerStates.Add(typeof(ClimbState), new ClimbState(args));
-        _controllerStates.Add(typeof(ClimbState), new ClimbState(args));
 		_controllerStates.Add(typeof(VaultState), new VaultState(args));
 		currentControllerState = _controllerStates[typeof(DefaultState)];
 
@@ -100,12 +98,6 @@ public partial class PlayerController : MonoBehaviour
 		_inputData.JumpInput = Input.GetAxis("Jump");
 		_inputData.CrouchingInput = Input.GetAxis("Crouch");
 		_inputData.IsRunning = Input.GetKey(KeyCode.LeftShift);
-	}
-
-	public void AddToCrouchState(float amount)
-	{
-		crouchNormalizedState += amount;
-		crouchNormalizedState = Mathf.Clamp01(crouchNormalizedState);
 	}
 
 	private void OnTriggerEnter(Collider other)

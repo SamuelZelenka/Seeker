@@ -26,7 +26,7 @@ public class VaultState : ControllerState
 		_currentTrajectory = 0;
 	}
 
-	public override float GetSpeedMultiplier(PlayerInput moveInfo, CharacterConfig CharConfig)
+	public override float GetSpeedMultiplier(MoveInfo moveInfo, CharacterConfig CharConfig)
 	{
 		return CharConfig.ClimbSpeedMultiplier;
 	}

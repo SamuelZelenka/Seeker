@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class ControllerState
 {
-	protected PlayerInput moveInfo;
+	protected MoveInfo moveInfo;
 	protected PlayerData playerData;
 	protected SkillController skillController;
 	protected CharacterConfig characterConfig;
@@ -33,7 +33,7 @@ public abstract class ControllerState
 	public virtual void Update() => actions.ForEach((a) => a.Invoke());
 	public virtual void LateUpdate() => lateActions.ForEach((a) => a.Invoke());
 
-	public abstract float GetSpeedMultiplier(PlayerInput moveInfo, CharacterConfig CharConfig);
+	public abstract float GetSpeedMultiplier(MoveInfo moveInfo, CharacterConfig CharConfig);
 	public virtual void Move() { }
 	public virtual void Jump() { }
 
@@ -45,7 +45,7 @@ public abstract class ControllerState
 
 public struct ControllerStateArgs
 {
-    public PlayerInput moveInfo;
+    public MoveInfo moveInfo;
     public PlayerData playerData;
     public SkillController skillController;
     public CharacterConfig characterConfig;
@@ -54,7 +54,7 @@ public struct ControllerStateArgs
     public CameraController cameraController;
 
     public ControllerStateArgs(
-    PlayerInput playerInput,
+    MoveInfo playerInput,
     PlayerData playerData,
     SkillController skillController,
     CharacterConfig characterConfig,

@@ -26,6 +26,7 @@ MonoBehaviour:
   _crouchHeight: 0.1
   _runSpeedMultiplier: 1.9
   _crouchSpeedMultiplier: 0.5
+  _crouchTime: 1
   _walkSpeedMultiplier: 1
   _climbSpeedMultiplier: 2
   _vaultSpeed:

@@ -9,12 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2df7e01a7b1ed7648860eb05b0ddc974, type: 3}
-  m_Name: PlayerInputData
+  m_Script: {fileID: 11500000, guid: b032024c20de58147a1b9ea670195bad, type: 3}
+  m_Name: MoveInfo
   m_EditorClassIdentifier: 
   HorizontalInput: 0
   VerticalInput: 0
   JumpInput: 0
   CrouchingInput: 0
   IsGrounded: 0
+  IsCrouching: 0
   IsRunning: 0
+  CrouchT: 0

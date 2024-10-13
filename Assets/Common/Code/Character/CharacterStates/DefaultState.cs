@@ -1,47 +1,11 @@
-﻿using System.Collections;
-using UnityEngine;
-
-public class CrouchState : DefaultState
-{
-	public CrouchState(ControllerStateArgs args) : base(args)
-	{
-		startActions.Add(() => playerController.StartCoroutine(Process()));
-		base.moveInfo = moveInfo;
-		Setup();
-	}
-
-	private bool _isCrouching;
-
-    public override void Update()
-	{
-		if (moveInfo.CrouchingInput <= 0)
-		{
-			playerController.SetControllerState<DefaultState>();
-			_isCrouching = false;
-		}
-	}
-	
-	private IEnumerator Process()
-	{
-        var standHeight = characterConfig.StandHeight;
-        var crouchHeight = characterConfig.CrouchHeight;
-		var target = _isCrouching ? crouchHeight : standHeight;
-		while (!Mathf.Approximately(characterController.height, target))
-		{
-			var t = playerController.crouchNormalizedState;
-			var newHeight = Mathf.Lerp(standHeight, crouchHeight, t);
-            characterController.height = newHeight;
-			yield return null;
-		}
-    }
-}
+﻿using UnityEngine;
 
 public class DefaultState : ControllerState
 {
 	private float _lastGroundTime = 0;
 	public DefaultState(ControllerStateArgs args) : base(args)
 	{
-		moveInfo = moveInfo;
+		moveInfo = args.moveInfo;
 		Setup();
 	}
 
@@ -50,7 +14,9 @@ public class DefaultState : ControllerState
 		earlyActions.Add(Move);
 		earlyActions.Add(UpdateGravity);
 		actions.Add(Jump);
-		actions.Add(NextSkill);
+		actions.Add(Crouch);
+		actions.Add(UpdateCrouching);
+        actions.Add(NextSkill);
 		actions.Add(PreviousSkill);
 		lateActions.Add(Friction);
 		lateActions.Add(MoveCharacter);
@@ -70,7 +36,6 @@ public class DefaultState : ControllerState
 		//TODO: Move Bobbing Speed somewhere else
 		CameraBobbing(inputDir);
 		//TODO: Move Bobbing Speed somewhere else
-
 
 		var controllerState = playerController.currentControllerState;
 		var moveSpeedMultiplier = controllerState.GetSpeedMultiplier(moveInfo, characterConfig);
@@ -123,7 +88,7 @@ public class DefaultState : ControllerState
 		}
 	}
 
-	public override float GetSpeedMultiplier(PlayerInput moveInfo, CharacterConfig CharConfig)
+	public override float GetSpeedMultiplier(MoveInfo moveInfo, CharacterConfig CharConfig)
 	{
 		float moveSpeedMultiplier = moveInfo.IsRunning ? CharConfig.RunSpeedMultiplier : CharConfig.WalkSpeedMultiplier;
 		moveSpeedMultiplier = moveInfo.CrouchingInput > 0 ? CharConfig.CrouchSpeedMultiplier : moveSpeedMultiplier;
@@ -144,11 +109,30 @@ public class DefaultState : ControllerState
 			}
 			playerController.velocity += Physics.gravity * Time.deltaTime;
 		}
+
 		moveInfo.IsGrounded = characterController.isGrounded;
+
 		if (moveInfo.IsGrounded)
 		{
 			_lastGroundTime = Time.time;
 		}
+	}
+
+	private void UpdateCrouching()
+	{
+		if (!moveInfo.IsCrouching && moveInfo.CrouchT == 0)
+		{
+            moveInfo.IsCrouching = false;
+			return;
+		}
+
+		var dir = moveInfo.CrouchingInput > 0 ? 1 : -1;
+
+		moveInfo.CrouchT += dir * characterConfig.CrouchTime * Time.deltaTime;
+		moveInfo.CrouchT = Mathf.Clamp01(moveInfo.CrouchT);
+
+		var targetHeight = Mathf.Lerp(characterConfig.StandHeight, characterConfig.CrouchHeight, moveInfo.CrouchT);
+		characterController.height = targetHeight;
 	}
 
 	private void Friction()
@@ -171,6 +155,18 @@ public class DefaultState : ControllerState
 		if (characterController.isGrounded)
 		{
 			playerController.velocity.y = 0;
+		}
+	}
+
+	private void Crouch()
+	{
+		if (moveInfo.CrouchingInput > 0)
+		{
+			moveInfo.IsCrouching = true;
+		}
+		else if (moveInfo.CrouchingInput == 0)
+		{
+			moveInfo.IsCrouching = false;
 		}
 	}
 
